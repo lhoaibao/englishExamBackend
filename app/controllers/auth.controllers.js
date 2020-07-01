@@ -56,7 +56,9 @@ exports.signin = (req, res) => {
             });
 
             res.status(200).send({
-                accessToken: token
+                accessToken: token,
+                ho: user.ho,
+                ten: user.ten
             });
         })
         .catch(err => {
