@@ -19,6 +19,7 @@ exports.create = (req, res) => {
         type: req.body.type,
         questions: req.body.questions
     };
+    console.log(test)
 
     // Save Test in the database
     Test.create(test)
@@ -48,24 +49,8 @@ exports.findAll = (req, res) => {
 };
 
 exports.searchName = (req, res) => {
-    const name = req.params.name;
+    const name = req.param("name");
     var condition = { name: { [Op.like]: `%${name}%` } };
-    
-    Test.findAll({where: condition})
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving Tests."
-            });
-        });
-};
-
-exports.findAllGrade = (req, res) => {
-    const grade = req.params.grade;
-    var condition = { grade: grade }
 
     Test.findAll({ where: condition })
         .then(data => {
@@ -79,10 +64,15 @@ exports.findAllGrade = (req, res) => {
         });
 };
 
-exports.findAllGradeType = (req, res) => {
-    const grade = req.params.grade;
-    const type = req.params.type;
-    var condition = { grade: grade, type: type }
+exports.filter = (req, res) => {
+    const grade = req.param('grade');
+    const type = req.param('type');
+    var condition
+    if (type) {
+        condition = { grade: grade, type: type }
+    } else {
+        condition = { grade: grade }
+    }
 
     Test.findAll({ where: condition })
         .then(data => {

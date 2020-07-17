@@ -17,13 +17,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // sync database 
-// const db = require("./app/models");
-// db.sequelize.sync();
+const db = require("./app/models");
+db.sequelize.sync();
 
 // routes
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
 require("./app/routes/test.routes")(app);
+require("./app/routes/result.routes")(app);
  
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

@@ -4,19 +4,17 @@ var router = require("express").Router();
 
 module.exports = app => {
     // Create a new Test
-    router.post("/", [authJwt.verifyToken, authJwt.isAdmin], controller.create);
+    // router.post("/", [authJwt.verifyToken, authJwt.isAdmin], controller.create);
+    router.post("/", controller.create);
 
     // Retrieve all tests
     router.get("/", controller.findAll);
 
     // Search test
-    router.get("/search/:name", controller.searchName);
+    router.get("/search", controller.searchName);
 
     // Retrieve all tests grade
-    // router.get("/:grade", controller.findAllGrade);
-
-    // Retrieve all tests grade and type
-    // router.get("/:grade/:type", controller.findAllGradeType);
+    router.get("/filter/", controller.filter);
 
     // Retrieve a single Test with id
     router.get("/:id", controller.findOne);

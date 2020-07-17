@@ -16,6 +16,13 @@ const sequelize = new Sequelize(
       acquire: config.pool.acquire,
       idle: config.pool.idle
     }
+  },
+  {
+    define: {
+      charset: 'utf8mb4',
+      timestamps: true
+    },
+    logging:false
   }
 );
 
@@ -27,5 +34,7 @@ db.sequelize = sequelize;
 db.user = require("../models/user.model.js")(sequelize, Sequelize);
 db.test = require("../models/test.model.js")(sequelize, Sequelize);
 db.result = require("../models/result.model.js")(sequelize, Sequelize);
+
+db.test.hasMany(db.result, {as: "results", foreignKey: { allowNull: false }})
 
 module.exports = db;

@@ -1,11 +1,7 @@
 module.exports = (sequelize, Sequelize) => {
     const Result = sequelize.define("results", {
         userId: {
-            type: Sequelize.STRING
-        },
-        testId: {
-            type: Sequelize.STRING,
-            allowNull: false,
+            type: Sequelize.INTEGER(11)
         },
         score: {
             type: Sequelize.STRING,
