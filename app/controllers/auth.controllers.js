@@ -17,6 +17,7 @@ exports.register = (req, res) => {
         role: "customer",
     }).then(user => {
         res.status(200).send({
+            id: user.id,
             ho: user.ho,
             ten: user.ten,
             tennguoidung: user.tennguoidung,
