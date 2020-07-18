@@ -10,17 +10,5 @@ module.exports = function(app) {
     next();
   });
 
-  app.get("/api/demo/", controller.allAccess);
-
-  app.get(
-    "/api/demo/user",
-    [authJwt.verifyToken],
-    controller.userBoard
-  );
-  
-  app.get(
-    "/api/demo/admin",
-    [authJwt.verifyToken, authJwt.isAdmin],
-    controller.adminBoard
-  );
+  app.get("/api/user/:id", controller.getUserInfo);
 }; 
