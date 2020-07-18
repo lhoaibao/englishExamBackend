@@ -3,10 +3,10 @@ const Result = db.result;
 const Test = db.test;
 
 
-function getTestAnswer(test){
+function getTestAnswer(test) {
     var testAnswer = []
     data = test.questions.all
-    for (i = 0; i< data.length; i++){
+    for (i = 0; i < data.length; i++) {
         testAnswer.push(...data[i].answer)
     }
     return testAnswer
@@ -32,7 +32,7 @@ exports.getResult = async (req, res) => {
     var score = await getScore(test, answer)
     result = {
         testId: testId,
-        userId: req.body.userId?req.body.userId:null,
+        userId: req.body.userId ? req.body.userId : null,
         answer: answer,
         score: score
     }
@@ -43,7 +43,21 @@ exports.getResult = async (req, res) => {
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while creating the Test."
+                    err.message || "Some error occurred while creating the Result."
             });
         });
+}
+
+exports.getUserResult = async (req, res) => {
+    userId = req.param('userId')
+    condition = { userId: userId }
+    Result.findAll({ where: condition }).then(data => {
+        res.send(data)
+    })
+    .catch(err => {
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred while retrieving Results."
+        });
+    });
 }

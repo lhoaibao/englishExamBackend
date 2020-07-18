@@ -17,8 +17,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // sync database 
-const db = require("./app/models");
-db.sequelize.sync();
+// const db = require("./app/models");
+// db.sequelize.sync();
 
 // routes
 require('./app/routes/auth.routes')(app);

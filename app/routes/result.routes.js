@@ -4,11 +4,11 @@ var router = require("express").Router();
 
 module.exports = app => {
 
-    // Retrieve all result
+    // Retrieve a result
     router.post("/getResult", controller.getResult);
 
-    // Retrieve a single Resutl with id
-    // router.get("/:id", controller.findOne);
+    // Retrieve a all Resutl of User
+    router.get("/", controller.getUserResult);
 
     app.use('/api/result', router);
 };
