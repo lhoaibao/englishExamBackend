@@ -1,6 +1,8 @@
 const db = require("../models");
+const { result } = require("../models");
 const Result = db.result;
 const Test = db.test;
+const sequelize = require("sequelize");
 
 
 function getTestAnswer(test) {
@@ -25,16 +27,48 @@ async function getScore(answer, myanswer) {
 
 
 exports.getResult = async (req, res) => {
-    answer = req.body.answer
-    testId = req.body.testId
+    var answer = req.body.answer === undefined ? false: req.body.answer
+    var testId = req.body.testId === undefined ? false: req.body.testId
+    var tennguoidung = req.body.tennguoidung === undefined ? false: req.body.tennguoidung
+
+    if (!answer || !testId){
+        res.send("missing field")
+    }
 
     var test = await Test.findByPk(testId)
     var score = await getScore(test, answer)
-    result = {
+    var result = {
         testId: testId,
-        userId: req.body.userId ? req.body.userId : null,
+        tennguoidung: tennguoidung? tennguoidung : null,
         answer: answer,
-        score: score
+        score: score,
+        grade: test.grade
+    }
+    check = await Result.findAll({
+        attributes: ["id","score"],
+        where: {
+            tennguoidung: tennguoidung,
+            testId: testId
+        },
+    })
+    if (check.length){
+        if (check[0].score < score){
+            Result.update(
+                result,
+                { where: { id: check[0].id } }
+            )
+            .then(data => {
+                res.send(data);
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message:
+                        err.message || "Some error occurred while creating the Result."
+                });
+            });
+        }
+        res.send(result)
+        return
     }
     Result.create(result)
         .then(data => {
@@ -46,6 +80,7 @@ exports.getResult = async (req, res) => {
                     err.message || "Some error occurred while creating the Result."
             });
         });
+    return
 }
 
 exports.getUserResult = async (req, res) => {
@@ -54,10 +89,75 @@ exports.getUserResult = async (req, res) => {
     Result.findAll({ where: condition }).then(data => {
         res.send(data)
     })
-    .catch(err => {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving Results."
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving Results."
+            });
         });
+}
+
+
+async function sumScore(table) {
+    var result = {}
+    for (i=0; i<table.length;i++){
+        key = table[i].tennguoidung
+        if (key in result){
+            result[key]["totalScore"] += parseInt(table[i].score)
+            result[key]["totalTest"] += 1
+            continue
+        }
+        result[key] = {"totalScore":parseInt(table[i].score), "totalTest":1}
+    }
+    return result
+}
+
+
+async function rank(data){
+    var totalscoreboard = Object.keys(data).map(function(key) {
+        return [key, data[key]['totalScore']]
     });
+
+    var totaltestboard = Object.keys(data).map(function(key) {
+        return [key, data[key]['totalTest']]
+    });
+
+    totalscoreboard.sort(function(first, second) {
+        return second[1] - first[1];
+    });
+
+
+    totaltestboard.sort(function(first, second) {
+        return second[1] - first[1];
+    });
+    return [totalscoreboard, totaltestboard]
+}
+
+
+async function getNumberResult(grade) {
+    var result = await Result.findAll({
+        attributes: ["tennguoidung", "score"],
+        where: {
+            tennguoidung: {
+                [sequelize.Op.not]: null
+            },
+            grade: grade
+        },
+    })
+    var data = await sumScore(result)
+    result = {}
+    table = await rank(data)
+    result["totalscoreboard"] = table[0] 
+    result["totaltestboard"] = table[1] 
+    return result
+}
+
+
+exports.getScoreBoard = async (req, res) => {
+    grade = req.param("grade") === undefined ? false: req.param("grade")
+    if (!grade || !["Lớp 1","Lớp 2","Lớp 3","Lớp 4","Lớp 5"].includes(grade)){
+        res.send("missing grade or wrong grade")
+    }
+    var a = await getNumberResult(grade)
+    res.send(a)
 }

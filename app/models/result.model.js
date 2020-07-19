@@ -1,7 +1,7 @@
 module.exports = (sequelize, Sequelize) => {
     const Result = sequelize.define("results", {
-        userId: {
-            type: Sequelize.INTEGER(11)
+        tennguoidung: {
+            type: Sequelize.STRING
         },
         score: {
             type: Sequelize.STRING,
@@ -9,6 +9,10 @@ module.exports = (sequelize, Sequelize) => {
         },
         answer: {
             type: Sequelize.JSON,
+            allowNull: false,
+        },
+        grade:{
+            type: Sequelize.STRING,
             allowNull: false,
         }
     },

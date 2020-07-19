@@ -10,5 +10,7 @@ module.exports = app => {
     // Retrieve a all Resutl of User
     router.get("/", controller.getUserResult);
 
+    router.get("/scoreboard", controller.getScoreBoard)
+
     app.use('/api/result', router);
 };
