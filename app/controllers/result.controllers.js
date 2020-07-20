@@ -2,6 +2,7 @@ const db = require("../models");
 const { result } = require("../models");
 const Result = db.result;
 const Test = db.test;
+const User = db.user;
 const sequelize = require("sequelize");
 
 
@@ -36,6 +37,23 @@ exports.getResult = async (req, res) => {
     }
 
     var test = await Test.findByPk(testId)
+    if (!test){
+        res.send("testId not found")
+        return
+    }
+
+    var user = await User.findAll({
+        attributes: ["tennguoidung"],
+        where: {
+            tennguoidung: tennguoidung,
+        },
+    })
+    console.log(user)
+    if (!user.length){
+        res.send("user not found")
+        return
+    }
+
     var score = await getScore(test, answer)
     var result = {
         testId: testId,
