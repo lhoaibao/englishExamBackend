@@ -19,3 +19,39 @@ exports.getUserInfo = (req, res) => {
             });
         });
 }
+
+
+exports.deleteUser = (req, res) => {
+    const id = req.params.id;
+    console.log(id)
+
+    User.destroy({
+        where: {
+            id: id
+        }
+    }).then(function (deletedRecord) {
+        if (deletedRecord === 1) {
+            res.status(200).json({ message: "Deleted successfully" });
+        }
+        else {
+            res.status(404).json({ message: "record not found" })
+        }
+    })
+        .catch(function (error) {
+            res.status(500).json(error);
+        });
+}
+
+
+exports.listUser = (req, res) => {
+    User.findAll()
+        .then(data => {
+            res.send(data)
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving Users."
+            });
+        });
+}

@@ -30,7 +30,8 @@ isAdmin = (req, res, next) => {
         },
     }).then(user => {
         if (user.role === "admin") {
-            return;
+            next();
+            return
         }
 
         res.status(403).send({

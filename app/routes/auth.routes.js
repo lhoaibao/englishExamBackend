@@ -1,4 +1,4 @@
-const { verifyRegister } = require("../middlewares");
+const { verifyRegister, authJwt } = require("../middlewares");
 const { validateForm } = require("../middlewares");
 const controller = require("../controllers/auth.controllers");
 
@@ -25,7 +25,17 @@ module.exports = function (app) {
         "/api/auth/login", 
         [
             validateForm.createValidator("login"),
-            validateForm.checkValidationResult
+            validateForm.checkValidationResult,
         ], 
         controller.signin);
+
+    app.post(
+        "api/admin/login",
+        [
+            validateForm.createValidator("login"),
+            validateForm.checkValidationResult,
+            authJwt.isAdmin
+        ],
+        controller.signin
+    );
 };
