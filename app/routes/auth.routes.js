@@ -30,7 +30,7 @@ module.exports = function (app) {
         controller.signin);
 
     app.post(
-        "api/admin/login",
+        "/api/admin/login",
         [
             validateForm.createValidator("login"),
             validateForm.checkValidationResult,
