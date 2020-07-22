@@ -26,7 +26,7 @@ verifyToken = (req, res, next) => {
 isAdmin = (req, res, next) => {
     User.findOne({
         where: {
-            tennguoidung: req.body.tennguoidung,
+            tennguoidung: req.param("tennguoidung"),
         },
     }).then(user => {
         if (user.role === "admin") {

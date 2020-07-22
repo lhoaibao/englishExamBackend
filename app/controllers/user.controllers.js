@@ -23,7 +23,6 @@ exports.getUserInfo = (req, res) => {
 
 exports.deleteUser = (req, res) => {
     const id = req.params.id;
-    console.log(id)
 
     User.destroy({
         where: {
