@@ -104,8 +104,8 @@ exports.getResult = async (req, res) => {
 }
 
 exports.getUserResult = async (req, res) => {
-    userId = req.param('userId')
-    condition = { userId: userId }
+    tennguoidung = req.param('tennguoidung')
+    condition = { tennguoidung: tennguoidung }
     Result.findAll({ where: condition }).then(data => {
         res.send(data)
     })
